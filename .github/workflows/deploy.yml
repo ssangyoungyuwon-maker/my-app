@@ -1,4 +1,4 @@
-name: Deploy with DockerHub to Ubuntu Server
+name: Deploy with Docker Compose to Ubuntu Server
 
 on:
   push:
@@ -69,11 +69,10 @@ jobs:
           ssh-keyscan -H ed25519 3.39.253.77 >> ~/.ssh/known_hosts
 
       # container 실행
-      - name: Deploy on server using DockerHub image
+      - name: Deploy on server using Docker Compose
         run: |
           ssh ubuntu@3.39.253.77 << 'EOF'
-            docker stop spring-my-app || true
-            docker rm spring-my-app || true
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/spring-my-app:latest
-            docker run -d --name spring-my-app -p 9090:9090 ${{ secrets.DOCKERHUB_USERNAME }}/spring-my-app:latest
+            cd ~/app
+            docker compose pull
+            docker compose up -d
           EOF
